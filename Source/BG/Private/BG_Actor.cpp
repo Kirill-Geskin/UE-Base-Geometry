@@ -3,6 +3,8 @@
 #include "BG_Actor.h"
 #include "..\Public\BG_Actor.h"
 #include "Engine/Engine.h"
+#include "TimerManager.h"
+
 
 
 DEFINE_LOG_CATEGORY_STATIC(Log_BG, All, All)
@@ -25,7 +27,10 @@ void ABG_Actor::BeginPlay()
 
 
 	InitialLocation = GetActorLocation();
-	
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ABG_Actor::OnTimerFired, GeometryData.TimerRate, true);
+
+
+	SetColor(GeometryData.Color);
 	// print_string_types();
 	// print_transform();
 	// print_types();
@@ -103,4 +108,22 @@ void ABG_Actor::HandleMovement()
 	case EMovementType::Static: break;
 	default: break;
 	}
+}
+
+void ABG_Actor::SetColor(const FLinearColor& Color)
+{
+	UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
+	if (DynMaterial)
+	{
+		DynMaterial->SetVectorParameterValue("Color", Color);
+	}
+}
+
+void ABG_Actor::OnTimerFired()
+{
+
+	FLinearColor NewColor = FLinearColor::MakeRandomColor();
+	UE_LOG(Log_BG, Display, TEXT("TimerCount: %i, Color to set up: %s"), *NewColor.ToString());
+	SetColor(NewColor);
+
 }

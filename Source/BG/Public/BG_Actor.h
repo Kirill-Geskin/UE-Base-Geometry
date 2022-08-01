@@ -27,6 +27,12 @@ struct FGeometryData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	EMovementType MoveType = EMovementType::Static;
+
+	UPROPERTY(EditAnywhere, Category = "Design")
+	FLinearColor Color = FLinearColor::Black;
+
+	UPROPERTY(EditAnywhere, Category = "Design")
+	float TimerRate = 3.0f;
 };
 
 UCLASS()
@@ -45,7 +51,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geometry Data")
 		FGeometryData GeometryData;
@@ -78,10 +84,15 @@ public:
 
 private:
 	FVector	InitialLocation;
+	FTimerHandle TimerHandle; 
+
 	void print_types();
 	void print_string_types();
 	void print_transform();
 	void HandleMovement();
+	void SetColor(const FLinearColor& Color);
+	void OnTimerFired();
+
 
 
 };
